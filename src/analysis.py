@@ -2,18 +2,19 @@ import pandas as pd
 import numpy as np
 from .helpers import ConectorBD
 
+
 def verificar_qualidade_dados(conector):
     """Relatório de qualidade (nulos, duplicatas) das tabelas principais."""
-    df_vendas   = conector.obter_tabela_bruta('sales')
-    df_clientes = conector.obter_tabela_bruta('customers')
-    df_produtos = conector.obter_tabela_bruta('products')
-    df_lojas    = conector.obter_tabela_bruta('stores')
+    df_vendas = conector.obter_tabela_bruta("sales")
+    df_clientes = conector.obter_tabela_bruta("customers")
+    df_produtos = conector.obter_tabela_bruta("products")
+    df_lojas = conector.obter_tabela_bruta("stores")
 
     tabelas = {
-        'Vendas':   df_vendas,
-        'Clientes': df_clientes,
-        'Produtos': df_produtos,
-        'Lojas':    df_lojas,
+        "Vendas": df_vendas,
+        "Clientes": df_clientes,
+        "Produtos": df_produtos,
+        "Lojas": df_lojas,
     }
 
     linhas = []
@@ -22,64 +23,79 @@ def verificar_qualidade_dados(conector):
         duplicatas = df.duplicated().sum()
         for coluna in df.columns:
             nulos = df[coluna].isnull().sum()
-            linhas.append({
-                'Tabela':         nome,
-                'Coluna':         coluna,
-                'Total registros': total,
-                'Nulos':          nulos,
-                'Nulos (%)':      round(nulos / total * 100, 2),
-                'Duplicatas':     duplicatas,
-            })
+            linhas.append(
+                {
+                    "Tabela": nome,
+                    "Coluna": coluna,
+                    "Total registros": total,
+                    "Nulos": nulos,
+                    "Nulos (%)": round(nulos / total * 100, 2),
+                    "Duplicatas": duplicatas,
+                }
+            )
 
     df_relatorio = pd.DataFrame(linhas)
 
     def destacar_nulos(val):
-        return 'background-color: #ffd6d6; color: #900' if val > 0 else ''
+        return "background-color: #ffd6d6; color: #900" if val > 0 else ""
 
     return (
-        df_relatorio.style
-        .map(destacar_nulos, subset=['Nulos', 'Nulos (%)'])
-        .format({'Nulos (%)': '{:.2f}%', 'Total registros': '{:,}', 'Duplicatas': '{:,}'})
-        .set_caption('Relatório de Qualidade dos Dados')
-        .set_table_styles([
-            {'selector': 'caption',
-             'props': 'font-size: 14px; font-weight: bold; text-align: left; padding-bottom: 8px;'},
-            {'selector': 'thead th',
-             'props': 'background-color: #f0f0f0; font-weight: bold; text-align: center;'},
-            {'selector': 'tbody tr:nth-child(even)',
-             'props': 'background-color: #fafafa;'},
-        ])
-        .hide(axis='index')
+        df_relatorio.style.map(destacar_nulos, subset=["Nulos", "Nulos (%)"])
+        .format(
+            {"Nulos (%)": "{:.2f}%", "Total registros": "{:,}", "Duplicatas": "{:,}"}
+        )
+        .set_caption("Relatório de Qualidade dos Dados")
+        .set_table_styles(
+            [
+                {
+                    "selector": "caption",
+                    "props": "font-size: 14px; font-weight: bold; text-align: left; padding-bottom: 8px;",
+                },
+                {
+                    "selector": "thead th",
+                    "props": "background-color: #f0f0f0; font-weight: bold; text-align: center;",
+                },
+                {
+                    "selector": "tbody tr:nth-child(even)",
+                    "props": "background-color: #fafafa;",
+                },
+            ]
+        )
+        .hide(axis="index")
     )
+
 
 def calcular_kpis_gerais(conector):
     """KPIs gerais: idade, receita, margem e descontos."""
     # Usando o conector para buscar os dados brutos necessários
-    df_clientes = conector.obter_tabela_bruta('customers')
-    df_vendas = conector.obter_tabela_bruta('sales')
-    
+    df_clientes = conector.obter_tabela_bruta("customers")
+    df_vendas = conector.obter_tabela_bruta("sales")
+
     # Cálculos com NumPy e Pandas
-    idade_media = np.mean(df_clientes['age'].dropna())
-    idade_mediana = np.median(df_clientes['age'].dropna())
-    receita_total = np.sum(df_vendas['revenue'])
-    margem_media = np.mean(df_vendas['profit'] / df_vendas['revenue'])
-    desconto_max = np.max(df_vendas['discount'])
-    vendas_sem_desconto = len(df_vendas[df_vendas['discount'] == 0])
+    idade_media = np.mean(df_clientes["age"].dropna())
+    idade_mediana = np.median(df_clientes["age"].dropna())
+    receita_total = np.sum(df_vendas["revenue"])
+    margem_media = np.mean(df_vendas["profit"] / df_vendas["revenue"])
+    desconto_max = np.max(df_vendas["discount"])
+    vendas_sem_desconto = len(df_vendas[df_vendas["discount"] == 0])
 
     # Criando um dicionário já formatado para negócios (Business Intelligence)
     relatorio_formatado = {
-        'Idade Média dos Clientes': f"{idade_media:.1f} anos",
-        'Idade Mediana dos Clientes': f"{idade_mediana:.0f} anos",
-        'Receita Total Geral': f"$ {receita_total:,.2f}",
-        'Margem de Lucro Média': f"{(margem_media * 100):.1f}%",
-        'Desconto Máximo Oferecido': f"{(desconto_max * 100):.0f}%",
-        'Quantidade de Vendas Sem Desconto': f"{vendas_sem_desconto:,}".replace(',', '.')
+        "Idade Média dos Clientes": f"{idade_media:.1f} anos",
+        "Idade Mediana dos Clientes": f"{idade_mediana:.0f} anos",
+        "Receita Total Geral": f"$ {receita_total:,.2f}",
+        "Margem de Lucro Média": f"{(margem_media * 100):.1f}%",
+        "Desconto Máximo Oferecido": f"{(desconto_max * 100):.0f}%",
+        "Quantidade de Vendas Sem Desconto": f"{vendas_sem_desconto:,}".replace(
+            ",", "."
+        ),
     }
-    
+
     # Transformando em uma Série do Pandas para renderizar uma tabela bonita no Jupyter
     sr_qualidade = pd.Series(relatorio_formatado, name="Métricas Gerais de Negócio")
-    
+
     return sr_qualidade
+
 
 def obter_desempenho_mensal_vendas(conector: ConectorBD):
     """Tendência mensal de receita/lucro com crescimento MoM."""
@@ -98,168 +114,212 @@ def obter_desempenho_mensal_vendas(conector: ConectorBD):
     """
     # Usando a flexibilidade do conector para queries complexas
     df = conector.executar_consulta_personalizada(consulta)
-    
+
     # Engenharia de Recursos (Feature Engineering) com Pandas
-    df['margem_lucro_pct'] = (df['lucro_total'] / df['receita_total']) * 100
-    df['margem_lucro_pct'] = df['margem_lucro_pct'].round(2)
-    
+    df["margem_lucro_pct"] = (df["lucro_total"] / df["receita_total"]) * 100
+    df["margem_lucro_pct"] = df["margem_lucro_pct"].round(2)
+
     # Calculando o crescimento da receita em relação ao mês anterior (MoM - Month over Month)
-    df['crescimento_receita_mom_pct'] = df.groupby('ano')['receita_total'].pct_change() * 100
-    df['crescimento_receita_mom_pct'] = df['crescimento_receita_mom_pct'].fillna(0).round(2)
-    
+    df["crescimento_receita_mom_pct"] = (
+        df.groupby("ano")["receita_total"].pct_change() * 100
+    )
+    df["crescimento_receita_mom_pct"] = (
+        df["crescimento_receita_mom_pct"].fillna(0).round(2)
+    )
+
     return df
+
 
 def analisar_segmentacao_clientes(conector):
     """Segmentação por faixa etária e status de fidelidade."""
     # Conector faz o JOIN automaticamente
-    df = conector.obter_vendas_com_dimensao('customers', 'customer_id')
-    
-    df['loyalty_member'] = df['loyalty_member'].map({1: 'Sim', 0: 'Não'})
-    
+    df = conector.obter_vendas_com_dimensao("customers", "customer_id")
+
+    df["loyalty_member"] = df["loyalty_member"].map({1: "Sim", 0: "Não"})
+
     # Agrupando dados por cliente usando Pandas
-    df_clientes = df.groupby(['customer_id', 'age', 'gender', 'loyalty_member']).agg(
-        total_pedidos=('order_id', 'count'),
-        gasto_total=('revenue', 'sum')
-    ).reset_index()
-    
+    df_clientes = (
+        df.groupby(["customer_id", "age", "gender", "loyalty_member"])
+        .agg(total_pedidos=("order_id", "count"), gasto_total=("revenue", "sum"))
+        .reset_index()
+    )
+
     # Tratando valores nulos de idade com a mediana
-    df_clientes['age'] = df_clientes['age'].fillna(df_clientes['age'].median())
-    
+    df_clientes["age"] = df_clientes["age"].fillna(df_clientes["age"].median())
+
     # Criando faixas etárias usando pd.cut
     limites = [18, 30, 45, 60, np.inf]
-    rotulos = ['18-29', '30-44', '45-59', '60+']
-    df_clientes['faixa_etaria'] = pd.cut(df_clientes['age'], bins=limites, labels=rotulos, right=False)
-    
+    rotulos = ["18-29", "30-44", "45-59", "60+"]
+    df_clientes["faixa_etaria"] = pd.cut(
+        df_clientes["age"], bins=limites, labels=rotulos, right=False
+    )
+
     # Agrupando pelas novas faixas e pelo status de fidelidade
-    analise_segmentos = df_clientes.groupby(['faixa_etaria', 'loyalty_member'])['gasto_total'].agg(
-        media_gasto='mean', 
-        soma_gasto='sum', 
-        contagem_clientes='count'
-    ).reset_index()
-    
+    analise_segmentos = (
+        df_clientes.groupby(["faixa_etaria", "loyalty_member"])["gasto_total"]
+        .agg(media_gasto="mean", soma_gasto="sum", contagem_clientes="count")
+        .reset_index()
+    )
+
     return analise_segmentos
+
 
 def analisar_produtos_cacau(conector: ConectorBD):
     """Lucratividade por categoria e intensidade de cacau."""
     # Conector faz o JOIN automaticamente
-    df = conector.obter_vendas_com_dimensao('products', 'product_id')
-    
+    df = conector.obter_vendas_com_dimensao("products", "product_id")
+
     # Agregando por produto usando Pandas
-    df_produtos = df.groupby(['category', 'cocoa_percent']).agg(
-        volume_total=('quantity', 'sum'),
-        lucro_total=('profit', 'sum')
-    ).reset_index()
-    
+    df_produtos = (
+        df.groupby(["category", "cocoa_percent"])
+        .agg(volume_total=("quantity", "sum"), lucro_total=("profit", "sum"))
+        .reset_index()
+    )
+
     # Filtrando apenas produtos que contêm a especificação de cacau
-    df_chocolate = df_produtos[df_produtos['cocoa_percent'].notna()].copy()
-    
+    df_chocolate = df_produtos[df_produtos["cocoa_percent"].notna()].copy()
+
     # Criando métrica categórica de intensidade de cacau com NumPy
     condicoes = [
-    (df_chocolate['cocoa_percent'] <= 60),
-    (df_chocolate['cocoa_percent'] <= 70),
-    (df_chocolate['cocoa_percent'] > 70)
+        (df_chocolate["cocoa_percent"] <= 60),
+        (df_chocolate["cocoa_percent"] <= 70),
+        (df_chocolate["cocoa_percent"] > 70),
     ]
-    escolhas = ['Intensidade Baixa (≤60%)', 'Meio Amargo (61-70%)', 'Amargo (>70%)']
-    df_chocolate['intensidade_cacau'] = np.select(condicoes, escolhas, default='Desconhecido')
-    
+    escolhas = ["Intensidade Baixa (≤60%)", "Meio Amargo (61-70%)", "Amargo (>70%)"]
+    df_chocolate["intensidade_cacau"] = np.select(
+        condicoes, escolhas, default="Desconhecido"
+    )
+
     # Agrupando pela nova métrica de intensidade
-    metricas_intensidade = df_chocolate.groupby('intensidade_cacau').agg(
-        lucro_total=('lucro_total', 'sum'),
-        volume_total=('volume_total', 'sum')
-    ).reset_index()
-    
+    metricas_intensidade = (
+        df_chocolate.groupby("intensidade_cacau")
+        .agg(lucro_total=("lucro_total", "sum"), volume_total=("volume_total", "sum"))
+        .reset_index()
+    )
+
     return df_produtos, metricas_intensidade
+
 
 def analisar_desempenho_lojas(conector):
     """Métricas por loja (receita, lucro, margem) com classificação em tiers."""
-    df = conector.obter_vendas_com_dimensao('stores', 'store_id')
+    df = conector.obter_vendas_com_dimensao("stores", "store_id")
 
     # Agrega as métricas principais por loja com Pandas
-    df_lojas = df.groupby(['store_id']).agg(
-        receita_total=('revenue', 'sum'),
-        custo_total=('cost', 'sum'),
-        lucro_total=('profit', 'sum'),
-        itens_vendidos=('quantity', 'sum'),
-        total_pedidos=('order_id', 'count')
-    ).reset_index()
+    df_lojas = (
+        df.groupby(["store_id"])
+        .agg(
+            receita_total=("revenue", "sum"),
+            custo_total=("cost", "sum"),
+            lucro_total=("profit", "sum"),
+            itens_vendidos=("quantity", "sum"),
+            total_pedidos=("order_id", "count"),
+        )
+        .reset_index()
+    )
 
     # Enriquece com métricas derivadas
-    df_lojas['margem_lucro_pct'] = (
-        df_lojas['lucro_total'] / df_lojas['receita_total'] * 100
+    df_lojas["margem_lucro_pct"] = (
+        df_lojas["lucro_total"] / df_lojas["receita_total"] * 100
     ).round(2)
 
-    df_lojas['ticket_medio'] = (
-        df_lojas['receita_total'] / df_lojas['total_pedidos']
+    df_lojas["ticket_medio"] = (
+        df_lojas["receita_total"] / df_lojas["total_pedidos"]
     ).round(2)
 
     # Classifica lojas em tiers usando percentis de lucro (NumPy)
-    p33 = np.percentile(df_lojas['lucro_total'], 33)
-    p66 = np.percentile(df_lojas['lucro_total'], 66)
+    p33 = np.percentile(df_lojas["lucro_total"], 33)
+    p66 = np.percentile(df_lojas["lucro_total"], 66)
 
     condicoes_tier = [
-        df_lojas['lucro_total'] >= p66,
-        df_lojas['lucro_total'] >= p33,
-        df_lojas['lucro_total'] < p33,
+        df_lojas["lucro_total"] >= p66,
+        df_lojas["lucro_total"] >= p33,
+        df_lojas["lucro_total"] < p33,
     ]
-    tiers = ['Alto desempenho', 'Desempenho médio', 'Baixo desempenho']
-    df_lojas['tier_desempenho'] = np.select(condicoes_tier, tiers, default='')
+    tiers = ["Alto desempenho", "Desempenho médio", "Baixo desempenho"]
+    df_lojas["tier_desempenho"] = np.select(condicoes_tier, tiers, default="")
 
     # Traz as colunas descritivas da tabela de lojas (nome, cidade, país etc.)
-    colunas_loja = [c for c in df.columns if c not in
-                    ['order_id', 'revenue', 'cost', 'profit', 'quantity',
-                     'discount', 'order_date', 'customer_id', 'product_id']]
-    info_lojas = df[colunas_loja].drop_duplicates(subset='store_id')
+    colunas_loja = [
+        c
+        for c in df.columns
+        if c
+        not in [
+            "order_id",
+            "revenue",
+            "cost",
+            "profit",
+            "quantity",
+            "discount",
+            "order_date",
+            "customer_id",
+            "product_id",
+        ]
+    ]
+    info_lojas = df[colunas_loja].drop_duplicates(subset="store_id")
 
-    df_lojas = info_lojas.merge(df_lojas, on='store_id')
-    df_lojas = df_lojas.sort_values('lucro_total', ascending=False).reset_index(drop=True)
+    df_lojas = info_lojas.merge(df_lojas, on="store_id")
+    df_lojas = df_lojas.sort_values("lucro_total", ascending=False).reset_index(
+        drop=True
+    )
 
     return df_lojas
 
 
 def analisar_impacto_desconto(conector):
     """Impacto dos descontos na margem, agrupado por faixa."""
-    df = conector.obter_tabela_bruta('sales')
+    df = conector.obter_tabela_bruta("sales")
 
     # Converte desconto de decimal para percentual inteiro
-    df['desconto_pct'] = (df['discount'] * 100).round(0).astype(int)
-    df['margem_pct'] = (df['profit'] / df['revenue'] * 100).round(2)
+    df["desconto_pct"] = (df["discount"] * 100).round(0).astype(int)
+    df["margem_pct"] = (df["profit"] / df["revenue"] * 100).round(2)
 
     # Cria faixas de desconto com pd.cut
     limites = [-1, 0, 5, 10, 15, 20]
-    rotulos = ['Sem desconto', '1–5%', '6–10%', '11–15%', '16–20%']
-    df['faixa_desconto'] = pd.cut(
-        df['desconto_pct'], bins=limites, labels=rotulos, right=True
+    rotulos = ["Sem desconto", "1–5%", "6–10%", "11–15%", "16–20%"]
+    df["faixa_desconto"] = pd.cut(
+        df["desconto_pct"], bins=limites, labels=rotulos, right=True
     )
 
     # Agrega por faixa
-    df_faixas = df.groupby('faixa_desconto', observed=True).agg(
-        total_vendas=('order_id', 'count'),
-        receita_total=('revenue', 'sum'),
-        lucro_total=('profit', 'sum'),
-        volume_total=('quantity', 'sum'),
-        margem_media_pct=('margem_pct', 'mean'),
-    ).reset_index()
+    df_faixas = (
+        df.groupby("faixa_desconto", observed=True)
+        .agg(
+            total_vendas=("order_id", "count"),
+            receita_total=("revenue", "sum"),
+            lucro_total=("profit", "sum"),
+            volume_total=("quantity", "sum"),
+            margem_media_pct=("margem_pct", "mean"),
+        )
+        .reset_index()
+    )
 
-    df_faixas['receita_media_por_venda'] = (
-        df_faixas['receita_total'] / df_faixas['total_vendas']
+    df_faixas["receita_media_por_venda"] = (
+        df_faixas["receita_total"] / df_faixas["total_vendas"]
     ).round(2)
-    df_faixas['margem_media_pct'] = df_faixas['margem_media_pct'].round(2)
+    df_faixas["margem_media_pct"] = df_faixas["margem_media_pct"].round(2)
 
     # Estatísticas de correlação com NumPy
     # Usa os valores individuais de desconto e margem (não as faixas agregadas)
-    correlacao = np.corrcoef(df['desconto_pct'], df['margem_pct'])[0, 1]
-    desconto_sem = df.loc[df['desconto_pct'] == 0, 'margem_pct'].mean()
-    desconto_com = df.loc[df['desconto_pct'] > 0, 'margem_pct'].mean()
+    correlacao = np.corrcoef(df["desconto_pct"], df["margem_pct"])[0, 1]
+    desconto_sem = df.loc[df["desconto_pct"] == 0, "margem_pct"].mean()
+    desconto_com = df.loc[df["desconto_pct"] > 0, "margem_pct"].mean()
     impacto_margem = desconto_com - desconto_sem
 
-    df_correlacao = pd.Series({
-        'Correlação desconto × margem': f"{correlacao:.4f}",
-        'Margem média sem desconto': f"{desconto_sem:.2f}%",
-        'Margem média com desconto': f"{desconto_com:.2f}%",
-        'Impacto médio do desconto na margem': f"{impacto_margem:.2f} p.p.",
-        'Total de vendas com desconto': f"{(df['desconto_pct'] > 0).sum():,}".replace(',', '.'),
-        'Total de vendas sem desconto': f"{(df['desconto_pct'] == 0).sum():,}".replace(',', '.'),
-    }, name='Impacto dos Descontos')
+    df_correlacao = pd.Series(
+        {
+            "Correlação desconto × margem": f"{correlacao:.4f}",
+            "Margem média sem desconto": f"{desconto_sem:.2f}%",
+            "Margem média com desconto": f"{desconto_com:.2f}%",
+            "Impacto médio do desconto na margem": f"{impacto_margem:.2f} p.p.",
+            "Total de vendas com desconto": f"{(df['desconto_pct'] > 0).sum():,}".replace(
+                ",", "."
+            ),
+            "Total de vendas sem desconto": f"{(df['desconto_pct'] == 0).sum():,}".replace(
+                ",", "."
+            ),
+        },
+        name="Impacto dos Descontos",
+    )
 
     return df_faixas, df_correlacao
 
@@ -283,45 +343,57 @@ def analisar_preferencias_por_genero(conector):
     df = conector.executar_consulta_personalizada(consulta)
 
     # --- Análise por categoria de produto ---
-    df_categoria = df.groupby(['gender', 'category']).agg(
-        receita_total=('revenue', 'sum'),
-        volume_total=('quantity', 'sum'),
-    ).reset_index()
+    df_categoria = (
+        df.groupby(["gender", "category"])
+        .agg(
+            receita_total=("revenue", "sum"),
+            volume_total=("quantity", "sum"),
+        )
+        .reset_index()
+    )
 
     # Calcula participação percentual da categoria dentro de cada gênero
-    total_por_genero = df_categoria.groupby('gender')['receita_total'].transform('sum')
-    df_categoria['pct_receita_no_genero'] = (
-        df_categoria['receita_total'] / total_por_genero * 100
+    total_por_genero = df_categoria.groupby("gender")["receita_total"].transform("sum")
+    df_categoria["pct_receita_no_genero"] = (
+        df_categoria["receita_total"] / total_por_genero * 100
     ).round(2)
 
     df_categoria = df_categoria.sort_values(
-        ['gender', 'receita_total'], ascending=[True, False]
+        ["gender", "receita_total"], ascending=[True, False]
     ).reset_index(drop=True)
 
     # --- Análise por intensidade de cacau ---
-    df_cacau_raw = df[df['cocoa_percent'].notna()].copy()
+    df_cacau_raw = df[df["cocoa_percent"].notna()].copy()
 
     # Reutiliza a mesma lógica de categorização de intensidade de analysis.py
     condicoes = [
-        (df_cacau_raw['cocoa_percent'] <= 60),
-        (df_cacau_raw['cocoa_percent'] <= 70),
-        (df_cacau_raw['cocoa_percent'] > 70),
+        (df_cacau_raw["cocoa_percent"] <= 60),
+        (df_cacau_raw["cocoa_percent"] <= 70),
+        (df_cacau_raw["cocoa_percent"] > 70),
     ]
-    escolhas = ['Intensidade Baixa (≤60%)', 'Meio Amargo (61–70%)', 'Amargo (>70%)']
-    df_cacau_raw['intensidade_cacau'] = np.select(condicoes, escolhas, default='Desconhecido')
+    escolhas = ["Intensidade Baixa (≤60%)", "Meio Amargo (61–70%)", "Amargo (>70%)"]
+    df_cacau_raw["intensidade_cacau"] = np.select(
+        condicoes, escolhas, default="Desconhecido"
+    )
 
-    df_cacau = df_cacau_raw.groupby(['gender', 'intensidade_cacau']).agg(
-        receita_total=('revenue', 'sum'),
-        volume_total=('quantity', 'sum'),
-    ).reset_index()
+    df_cacau = (
+        df_cacau_raw.groupby(["gender", "intensidade_cacau"])
+        .agg(
+            receita_total=("revenue", "sum"),
+            volume_total=("quantity", "sum"),
+        )
+        .reset_index()
+    )
 
-    total_por_genero_cacau = df_cacau.groupby('gender')['receita_total'].transform('sum')
-    df_cacau['pct_receita_no_genero'] = (
-        df_cacau['receita_total'] / total_por_genero_cacau * 100
+    total_por_genero_cacau = df_cacau.groupby("gender")["receita_total"].transform(
+        "sum"
+    )
+    df_cacau["pct_receita_no_genero"] = (
+        df_cacau["receita_total"] / total_por_genero_cacau * 100
     ).round(2)
 
     df_cacau = df_cacau.sort_values(
-        ['gender', 'receita_total'], ascending=[True, False]
+        ["gender", "receita_total"], ascending=[True, False]
     ).reset_index(drop=True)
 
     return df_categoria, df_cacau
@@ -344,56 +416,59 @@ def analisar_sazonalidade_yoy(conector):
     df = conector.executar_consulta_personalizada(consulta)
 
     # Pivota para ter um ano por coluna — facilita o cálculo YoY
-    df_pivot = df.pivot(index='mes', columns='ano', values='receita_total').reset_index()
+    df_pivot = df.pivot(
+        index="mes", columns="ano", values="receita_total"
+    ).reset_index()
     df_pivot.columns.name = None
 
-    anos = sorted(df['ano'].unique())
+    anos = sorted(df["ano"].unique())
     if len(anos) >= 2:
         ano_base, ano_atual = anos[0], anos[1]
         col_base = ano_base
         col_atual = ano_atual
 
-        df_pivot = df_pivot.rename(columns={
-            col_base: f'receita_{ano_base}',
-            col_atual: f'receita_{ano_atual}',
-        })
+        df_pivot = df_pivot.rename(
+            columns={
+                col_base: f"receita_{ano_base}",
+                col_atual: f"receita_{ano_atual}",
+            }
+        )
 
-        col_b = f'receita_{ano_base}'
-        col_a = f'receita_{ano_atual}'
+        col_b = f"receita_{ano_base}"
+        col_a = f"receita_{ano_atual}"
 
         # Crescimento YoY com Pandas
-        df_pivot['variacao_yoy_pct'] = (
+        df_pivot["variacao_yoy_pct"] = (
             (df_pivot[col_a] - df_pivot[col_b]) / df_pivot[col_b] * 100
         ).round(2)
 
         # Classifica padrão sazonal usando np.select
-        media_yoy = df_pivot['variacao_yoy_pct'].mean()
-        desvio_yoy = df_pivot['variacao_yoy_pct'].std()
+        media_yoy = df_pivot["variacao_yoy_pct"].mean()
+        desvio_yoy = df_pivot["variacao_yoy_pct"].std()
 
         condicoes_sazo = [
-            df_pivot['variacao_yoy_pct'] > media_yoy + desvio_yoy,
-            df_pivot['variacao_yoy_pct'] < media_yoy - desvio_yoy,
+            df_pivot["variacao_yoy_pct"] > media_yoy + desvio_yoy,
+            df_pivot["variacao_yoy_pct"] < media_yoy - desvio_yoy,
         ]
-        padroes = ['Sazonalidade positiva', 'Sazonalidade negativa']
-        df_pivot['padrao_sazonal'] = np.select(
-            condicoes_sazo, padroes, default='Comportamento estável'
+        padroes = ["Sazonalidade positiva", "Sazonalidade negativa"]
+        df_pivot["padrao_sazonal"] = np.select(
+            condicoes_sazo, padroes, default="Comportamento estável"
         )
 
         # Estatísticas descritivas com NumPy
-        variacoes = df_pivot['variacao_yoy_pct'].values
-        df_estatisticas = pd.Series({
-            'Crescimento YoY médio':        f"{np.mean(variacoes):.2f}%",
-            'Melhor mês (maior crescimento YoY)':
-                f"Mês {df_pivot.loc[df_pivot['variacao_yoy_pct'].idxmax(), 'mes']:.0f} "
+        variacoes = df_pivot["variacao_yoy_pct"].values
+        df_estatisticas = pd.Series(
+            {
+                "Crescimento YoY médio": f"{np.mean(variacoes):.2f}%",
+                "Melhor mês (maior crescimento YoY)": f"Mês {df_pivot.loc[df_pivot['variacao_yoy_pct'].idxmax(), 'mes']:.0f} "
                 f"({np.max(variacoes):.2f}%)",
-            'Pior mês (menor crescimento YoY)':
-                f"Mês {df_pivot.loc[df_pivot['variacao_yoy_pct'].idxmin(), 'mes']:.0f} "
+                "Pior mês (menor crescimento YoY)": f"Mês {df_pivot.loc[df_pivot['variacao_yoy_pct'].idxmin(), 'mes']:.0f} "
                 f"({np.min(variacoes):.2f}%)",
-            'Meses com crescimento positivo':
-                str(int(np.sum(variacoes > 0))),
-            'Meses com crescimento negativo':
-                str(int(np.sum(variacoes < 0))),
-            'Desvio padrão das variações YoY': f"{np.std(variacoes):.2f} p.p.",
-        }, name='Sazonalidade Year-over-Year')
+                "Meses com crescimento positivo": str(int(np.sum(variacoes > 0))),
+                "Meses com crescimento negativo": str(int(np.sum(variacoes < 0))),
+                "Desvio padrão das variações YoY": f"{np.std(variacoes):.2f} p.p.",
+            },
+            name="Sazonalidade Year-over-Year",
+        )
 
     return df_pivot, df_estatisticas

@@ -4,7 +4,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 
-OUTPUT_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "output")
+OUTPUT_DIR = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "output"
+)
 
 
 def _salvar_figura(nome_arquivo):
@@ -12,7 +14,8 @@ def _salvar_figura(nome_arquivo):
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     plt.savefig(
         os.path.join(OUTPUT_DIR, nome_arquivo),
-        dpi=150, bbox_inches="tight",
+        dpi=150,
+        bbox_inches="tight",
     )
 
 
@@ -23,13 +26,14 @@ def visualizar_desempenho_por_cidade(desempenho_por_cidade):
     """
     metricas = [
         ("receita_total", "Receita Total por Cidade", "Receita Total"),
-        ("lucro_total",   "Lucro Total por Cidade",   "Lucro Total"),
+        ("lucro_total", "Lucro Total por Cidade", "Lucro Total"),
         ("itens_vendidos", "Itens Vendidos por Cidade", "Itens Vendidos"),
     ]
 
     dados_cidade = (
-        desempenho_por_cidade
-        .groupby("city")[["receita_total", "lucro_total", "itens_vendidos"]]
+        desempenho_por_cidade.groupby("city")[
+            ["receita_total", "lucro_total", "itens_vendidos"]
+        ]
         .sum()
         .sort_values("receita_total", ascending=False)
         .reset_index()
@@ -92,15 +96,14 @@ def visualizar_fidelidade(conector):
     )
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
-    fig.suptitle(
-        "Membros Fidelidade vs Não-Membros", fontsize=16, fontweight="bold"
-    )
+    fig.suptitle("Membros Fidelidade vs Não-Membros", fontsize=16, fontweight="bold")
     cores = ["#2ecc71", "#e74c3c"]
 
     barras1 = ax1.bar(
         ticket_medio["tipo_cliente"],
         ticket_medio["ticket_medio"],
-        color=cores, width=0.5,
+        color=cores,
+        width=0.5,
     )
     ax1.set_title("Ticket Médio por Pedido (R$)", fontsize=13, fontweight="bold")
     ax1.set_ylabel("Receita Média (R$)")
@@ -108,14 +111,18 @@ def visualizar_fidelidade(conector):
     for barra in barras1:
         altura = barra.get_height()
         ax1.text(
-            barra.get_x() + barra.get_width() / 2, altura + 0.2,
-            f"R$ {altura:.2f}", ha="center", fontweight="bold",
+            barra.get_x() + barra.get_width() / 2,
+            altura + 0.2,
+            f"R$ {altura:.2f}",
+            ha="center",
+            fontweight="bold",
         )
 
     barras2 = ax2.bar(
         frequencia["tipo_cliente"],
         frequencia["frequencia_media"],
-        color=cores, width=0.5,
+        color=cores,
+        width=0.5,
     )
     ax2.set_title(
         "Frequência Média de Compras por Cliente", fontsize=13, fontweight="bold"
@@ -125,8 +132,11 @@ def visualizar_fidelidade(conector):
     for barra in barras2:
         altura = barra.get_height()
         ax2.text(
-            barra.get_x() + barra.get_width() / 2, altura + 0.2,
-            f"{altura:.1f} pedidos", ha="center", fontweight="bold",
+            barra.get_x() + barra.get_width() / 2,
+            altura + 0.2,
+            f"{altura:.1f} pedidos",
+            ha="center",
+            fontweight="bold",
         )
 
     plt.tight_layout()
@@ -157,18 +167,15 @@ def visualizar_vendas_por_estacao(conector):
     df = conector.executar_consulta_personalizada(consulta)
 
     # Seleciona os 10 produtos com maior volume total
-    top_produtos = (
-        df.groupby("produto")["total_vendido"]
-        .sum()
-        .nlargest(10)
-        .index
-    )
+    top_produtos = df.groupby("produto")["total_vendido"].sum().nlargest(10).index
     df_top = df[df["produto"].isin(top_produtos)]
 
     # Pivoteia por estação
     tabela_pivot = df_top.pivot_table(
-        index="estacao", columns="produto",
-        values="total_vendido", aggfunc="sum",
+        index="estacao",
+        columns="produto",
+        values="total_vendido",
+        aggfunc="sum",
     )
     ordem_estacoes = ["Inverno", "Primavera", "Verão", "Outono"]
     tabela_pivot = tabela_pivot.reindex(ordem_estacoes)
@@ -210,46 +217,52 @@ def visualizar_consumo_por_dia_semana(conector):
     df = conector.executar_consulta_personalizada(consulta)
 
     mapa_dias = {
-        0: "Segunda", 1: "Terça", 2: "Quarta", 3: "Quinta",
-        4: "Sexta", 5: "Sábado", 6: "Domingo",
+        0: "Segunda",
+        1: "Terça",
+        2: "Quarta",
+        3: "Quinta",
+        4: "Sexta",
+        5: "Sábado",
+        6: "Domingo",
     }
     df["dia_semana"] = df["day_of_week"].map(mapa_dias)
     ordem_dias = list(mapa_dias.values())
 
     # Média total por dia
-    media_total = (
-        df.groupby("dia_semana")["media_consumo"]
-        .mean()
-        .reindex(ordem_dias)
-    )
+    media_total = df.groupby("dia_semana")["media_consumo"].mean().reindex(ordem_dias)
 
     # Por gênero
-    pivot_genero = (
-        df.pivot_table(index="dia_semana", columns="genero",
-                       values="media_consumo", aggfunc="mean")
-        .reindex(ordem_dias)
-    )
+    pivot_genero = df.pivot_table(
+        index="dia_semana", columns="genero", values="media_consumo", aggfunc="mean"
+    ).reindex(ordem_dias)
 
     # Por faixa etária
-    pivot_idade = (
-        df.pivot_table(index="dia_semana", columns="faixa_idade",
-                       values="media_consumo", aggfunc="mean")
-        .reindex(ordem_dias)
-    )
+    pivot_idade = df.pivot_table(
+        index="dia_semana",
+        columns="faixa_idade",
+        values="media_consumo",
+        aggfunc="mean",
+    ).reindex(ordem_dias)
 
     plt.figure(figsize=(14, 8))
     plt.plot(media_total.index, media_total.values, marker="o", label="Média Total")
 
     for col in pivot_genero.columns:
         plt.plot(
-            pivot_genero.index, pivot_genero[col],
-            marker="o", linestyle="--", label=f"Gênero: {col}",
+            pivot_genero.index,
+            pivot_genero[col],
+            marker="o",
+            linestyle="--",
+            label=f"Gênero: {col}",
         )
 
     for col in pivot_idade.columns:
         plt.plot(
-            pivot_idade.index, pivot_idade[col],
-            marker="o", linestyle=":", label=f"Idade: {col}",
+            pivot_idade.index,
+            pivot_idade[col],
+            marker="o",
+            linestyle=":",
+            label=f"Idade: {col}",
         )
 
     plt.title("Consumo Médio de Chocolate por Dia da Semana")
@@ -316,12 +329,11 @@ def visualizar_clusterizacao(conector):
     df_vendas["cluster"] = rotulos
 
     # Nomes automáticos baseados no perfil predominante
-    perfil = (
-        df_vendas.groupby("cluster")[colunas_cluster]
-        .agg(lambda x: x.mode()[0])
-    )
+    perfil = df_vendas.groupby("cluster")[colunas_cluster].agg(lambda x: x.mode()[0])
     mapa_nomes = perfil.apply(
-        lambda r: f"{r['genero']} | {r['faixa_idade']} | {r['dia_semana']} | {r['estacao']}",
+        lambda r: (
+            f"{r['genero']} | {r['faixa_idade']} | {r['dia_semana']} | {r['estacao']}"
+        ),
         axis=1,
     ).to_dict()
     df_vendas["nome_cluster"] = df_vendas["cluster"].map(mapa_nomes)
@@ -334,8 +346,10 @@ def visualizar_clusterizacao(conector):
     for id_cluster in range(4):
         mascara = rotulos == id_cluster
         plt.scatter(
-            X_pca[mascara, 0], X_pca[mascara, 1],
-            label=f"Cluster {id_cluster}", alpha=0.6,
+            X_pca[mascara, 0],
+            X_pca[mascara, 1],
+            label=f"Cluster {id_cluster}",
+            alpha=0.6,
         )
 
     plt.title("Clusterização de Comportamento de Consumo (PCA)")
@@ -364,8 +378,13 @@ def visualizar_comportamento_clusters(df_vendas):
     tabela = pd.crosstab(df_vendas["dia_semana"], df_vendas["nome_cluster"])
 
     ordem_dias = [
-        "Segunda-feira", "Terça-feira", "Quarta-feira",
-        "Quinta-feira", "Sexta-feira", "Sábado", "Domingo",
+        "Segunda-feira",
+        "Terça-feira",
+        "Quarta-feira",
+        "Quinta-feira",
+        "Sexta-feira",
+        "Sábado",
+        "Domingo",
     ]
     tabela = tabela.reindex(ordem_dias)
 

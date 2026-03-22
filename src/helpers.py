@@ -1,17 +1,18 @@
 import duckdb
 from pathlib import Path
 
+
 class ConectorBD:
     """Conector DuckDB que retorna DataFrames do Pandas."""
-    
+
     def __init__(self, caminho_bd=None):
         if caminho_bd is None:
             # Descobre dinamicamente a raiz do projeto.
             # Path(__file__) é o src/helpers.py. O .parent.parent volta para a raiz do projeto.
             pasta_raiz = Path(__file__).parent.parent
-            
+
             # Constrói o caminho absoluto: /.../pi4_aplicacoes_ciencia_de_dados/data/chocolate_sales.db
-            self.caminho_bd = str(pasta_raiz / 'data' / 'chocolate_sales.db')
+            self.caminho_bd = str(pasta_raiz / "data" / "chocolate_sales.db")
         else:
             self.caminho_bd = caminho_bd
 
@@ -52,12 +53,14 @@ class ConectorBD:
         """
         return self._executar_consulta(consulta)
 
-    def obter_vendas_serie_temporal(self, granularidade_tempo='month'):
+    def obter_vendas_serie_temporal(self, granularidade_tempo="month"):
         """Vendas agregadas por granularidade temporal (day, week, month, year)."""
-        granularidades_validas = ['year', 'month', 'week', 'day']
+        granularidades_validas = ["year", "month", "week", "day"]
         if granularidade_tempo not in granularidades_validas:
-            raise ValueError(f"A variável granularidade_tempo deve ser uma das opções: {granularidades_validas}")
-            
+            raise ValueError(
+                f"A variável granularidade_tempo deve ser uma das opções: {granularidades_validas}"
+            )
+
         consulta = f"""
             SELECT 
                 c.{granularidade_tempo},
