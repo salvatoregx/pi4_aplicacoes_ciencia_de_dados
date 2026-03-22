@@ -3,11 +3,7 @@ import numpy as np
 from .helpers import ConectorBD
 
 def verificar_qualidade_dados(conector):
-    """
-    Verifica a qualidade das quatro tabelas principais do dataset.
-    Retorna um Styler do Pandas que renderiza como tabela HTML colorida no Jupyter,
-    destacando em vermelho as colunas com valores nulos.
-    """
+    """Relatório de qualidade (nulos, duplicatas) das tabelas principais."""
     df_vendas   = conector.obter_tabela_bruta('sales')
     df_clientes = conector.obter_tabela_bruta('customers')
     df_produtos = conector.obter_tabela_bruta('products')
@@ -57,11 +53,7 @@ def verificar_qualidade_dados(conector):
     )
 
 def calcular_kpis_gerais(conector):
-    """
-    Extrai informações básicas e estatísticas descritivas das tabelas principais.
-    Usa os métodos nativos do conector para puxar tabelas brutas e retorna
-    uma Pandas Series formatada para exibição no Jupyter.
-    """
+    """KPIs gerais: idade, receita, margem e descontos."""
     # Usando o conector para buscar os dados brutos necessários
     df_clientes = conector.obter_tabela_bruta('customers')
     df_vendas = conector.obter_tabela_bruta('sales')
@@ -90,10 +82,7 @@ def calcular_kpis_gerais(conector):
     return sr_qualidade
 
 def obter_desempenho_mensal_vendas(conector: ConectorBD):
-    """
-    Analisa a tendência mensal usando a consulta personalizada do conector,
-    e aplica cálculos de crescimento com Pandas.
-    """
+    """Tendência mensal de receita/lucro com crescimento MoM."""
     consulta = """
         SELECT 
             c.year as ano, 
@@ -121,10 +110,7 @@ def obter_desempenho_mensal_vendas(conector: ConectorBD):
     return df
 
 def analisar_segmentacao_clientes(conector):
-    """
-    Usa o conector para mesclar Vendas e Clientes automaticamente.
-    Trata a coluna binária de fidelidade, categoriza as idades e analisa o comportamento de compra.
-    """
+    """Segmentação por faixa etária e status de fidelidade."""
     # Conector faz o JOIN automaticamente
     df = conector.obter_vendas_com_dimensao('customers', 'customer_id')
     
@@ -154,10 +140,7 @@ def analisar_segmentacao_clientes(conector):
     return analise_segmentos
 
 def analisar_produtos_cacau(conector: ConectorBD):
-    """
-    Usa o conector para mesclar Vendas e Produtos.
-    Analisa a correlação entre a porcentagem de cacau e a lucratividade usando NumPy.
-    """
+    """Lucratividade por categoria e intensidade de cacau."""
     # Conector faz o JOIN automaticamente
     df = conector.obter_vendas_com_dimensao('products', 'product_id')
     
@@ -188,22 +171,7 @@ def analisar_produtos_cacau(conector: ConectorBD):
     return df_produtos, metricas_intensidade
 
 def analisar_desempenho_lojas(conector):
-    """
-    Analisa o desempenho comparativo entre lojas usando o ConectorBD.
-
-    Cruza a tabela fato 'sales' com a dimensão 'stores' para calcular as
-    principais métricas de negócio por loja: receita, lucro, volume e margem.
-    Também classifica cada loja em um tier de desempenho usando np.select,
-    facilitando a identificação de lojas que merecem atenção estratégica.
-
-    Retorna
-    -------
-    df_lojas : pd.DataFrame
-        Métricas agregadas por loja, ordenadas por lucro total decrescente.
-        Colunas: store_id, (colunas da tabela stores), receita_total,
-                 custo_total, lucro_total, itens_vendidos, margem_lucro_pct,
-                 ticket_medio, tier_desempenho.
-    """
+    """Métricas por loja (receita, lucro, margem) com classificação em tiers."""
     df = conector.obter_vendas_com_dimensao('stores', 'store_id')
 
     # Agrega as métricas principais por loja com Pandas
@@ -249,25 +217,7 @@ def analisar_desempenho_lojas(conector):
 
 
 def analisar_impacto_desconto(conector):
-    """
-    Investiga se a política de descontos é financeiramente saudável para o negócio.
-
-    Categoriza cada venda por faixa de desconto e calcula, para cada faixa,
-    a margem de lucro real e o volume gerado. O objetivo é responder se o
-    desconto compensa em volume ou corrói a margem sem retorno proporcional.
-
-    Retorna
-    -------
-    df_faixas : pd.DataFrame
-        Análise por faixa de desconto.
-        Colunas: faixa_desconto, total_vendas, receita_total, lucro_total,
-                 margem_media_pct, volume_total, receita_media_por_venda.
-
-    df_correlacao : pd.DataFrame
-        Estatísticas descritivas de NumPy para suportar uma análise de
-        correlação entre desconto e margem.
-        Colunas: metrica, valor.
-    """
+    """Impacto dos descontos na margem, agrupado por faixa."""
     df = conector.obter_tabela_bruta('sales')
 
     # Converte desconto de decimal para percentual inteiro
@@ -315,26 +265,7 @@ def analisar_impacto_desconto(conector):
 
 
 def analisar_preferencias_por_genero(conector):
-    """
-    Cruza dados demográficos (gênero) com preferências de produto para
-    identificar padrões de consumo distintos entre grupos de clientes.
-
-    Usa o ConectorBD para realizar dois JOINs encadeados (clientes + vendas +
-    produtos) via consulta personalizada, e aplica Pandas para calcular
-    a distribuição de preferências de categoria e intensidade de cacau por gênero.
-
-    Retorna
-    -------
-    df_categoria : pd.DataFrame
-        Distribuição de receita e volume por gênero e categoria de produto.
-        Colunas: gender, category, receita_total, volume_total,
-                 pct_receita_no_genero.
-
-    df_cacau : pd.DataFrame
-        Distribuição de receita e volume por gênero e intensidade de cacau.
-        Colunas: gender, intensidade_cacau, receita_total, volume_total,
-                 pct_receita_no_genero.
-    """
+    """Preferências de categoria e intensidade de cacau por gênero."""
     # Requer JOIN triplo — usa consulta personalizada do conector
     consulta = """
         SELECT
@@ -397,26 +328,7 @@ def analisar_preferencias_por_genero(conector):
 
 
 def analisar_sazonalidade_yoy(conector):
-    """
-    Compara o desempenho dos mesmos meses entre 2023 e 2024 (análise YoY —
-    Year over Year), revelando padrões sazonais consistentes que a análise
-    MoM (mês a mês) não captura.
-
-    A análise MoM existente em obter_desempenho_mensal_vendas é útil para
-    detectar aceleração/desaceleração de curto prazo, mas confunde variação
-    sazonal com tendência real. A análise YoY isola os dois efeitos.
-
-    Retorna
-    -------
-    df_pivot : pd.DataFrame
-        Tabela pivotada com receita mensal por ano, crescimento YoY e
-        classificação de sazonalidade.
-        Colunas: mes, receita_2023, receita_2024, variacao_yoy_pct,
-                 padrao_sazonal.
-
-    df_estatisticas : pd.Series
-        Estatísticas descritivas da sazonalidade com NumPy.
-    """
+    """Análise YoY: compara receita mensal entre anos e classifica sazonalidade."""
     consulta = """
         SELECT
             c.year  AS ano,

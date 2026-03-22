@@ -2,13 +2,9 @@ import duckdb
 from pathlib import Path
 
 class ConectorBD:
-    """
-    Uma classe de conexão para abstrair as consultas SQL do DuckDB para a fase de Análise Exploratória de Dados (EDA) da equipe.
-    Retorna DataFrames do Pandas para uso imediato com NumPy e Matplotlib.
-    """
+    """Conector DuckDB que retorna DataFrames do Pandas."""
     
     def __init__(self, caminho_bd=None):
-        """Inicializa o conector descobrindo automaticamente o caminho do banco."""
         if caminho_bd is None:
             # Descobre dinamicamente a raiz do projeto.
             # Path(__file__) é o src/helpers.py. O .parent.parent volta para a raiz do projeto.
@@ -20,28 +16,19 @@ class ConectorBD:
             self.caminho_bd = caminho_bd
 
     def _executar_consulta(self, consulta):
-        """Método interno para executar uma consulta SQL e retornar um DataFrame do Pandas."""
         with duckdb.connect(self.caminho_bd) as conexao:
             df = conexao.execute(consulta).df()
         return df
 
     def obter_tabela_bruta(self, nome_tabela, limite=None):
-        """
-        Busca uma tabela inteira. Útil para visões gerais básicas na análise exploratória.
-        
-        Exemplo: df_lojas = conector.obter_tabela_bruta('stores')
-        """
+        """Retorna a tabela completa (ou limitada) como DataFrame."""
         consulta = f"SELECT * FROM {nome_tabela}"
         if limite:
             consulta += f" LIMIT {limite}"
         return self._executar_consulta(consulta)
 
     def obter_vendas_com_dimensao(self, tabela_dimensao, chave_juncao):
-        """
-        Faz a junção (join) automática da tabela fato ('sales') com uma tabela dimensão.
-        
-        Exemplo: df_vendas_clientes = conector.obter_vendas_com_dimensao('customers', 'customer_id')
-        """
+        """JOIN de sales com a tabela dimensão informada."""
         consulta = f"""
             SELECT s.*, d.* EXCLUDE ({chave_juncao})
             FROM sales s
@@ -50,11 +37,7 @@ class ConectorBD:
         return self._executar_consulta(consulta)
 
     def obter_agregacao_vendas(self, tabela_dimensao, chave_juncao, coluna_agrupamento):
-        """
-        Pré-calcula as principais métricas de negócios agrupadas por qualquer coluna categórica para auxiliar na tomada de decisão.
-        
-        Exemplo: df_metricas_categoria = conector.obter_agregacao_vendas('products', 'product_id', 'category')
-        """
+        """Métricas de vendas agregadas pela coluna de agrupamento."""
         consulta = f"""
             SELECT 
                 d.{coluna_agrupamento},
@@ -70,11 +53,7 @@ class ConectorBD:
         return self._executar_consulta(consulta)
 
     def obter_vendas_serie_temporal(self, granularidade_tempo='month'):
-        """
-        Busca dados de vendas agregados por tempo (day, week, month, ou year).
-        
-        Exemplo: df_tendencia_mensal = conector.obter_vendas_serie_temporal('month')
-        """
+        """Vendas agregadas por granularidade temporal (day, week, month, year)."""
         granularidades_validas = ['year', 'month', 'week', 'day']
         if granularidade_tempo not in granularidades_validas:
             raise ValueError(f"A variável granularidade_tempo deve ser uma das opções: {granularidades_validas}")
@@ -92,7 +71,5 @@ class ConectorBD:
         return self._executar_consulta(consulta)
 
     def executar_consulta_personalizada(self, sql_personalizado):
-        """
-        Permite que os membros da equipe executem seu próprio SQL específico caso os métodos do conector não sejam suficientes.
-        """
+        """Executa SQL arbitrário e retorna DataFrame."""
         return self._executar_consulta(sql_personalizado)

@@ -264,14 +264,9 @@ def visualizar_consumo_por_dia_semana(conector):
 
 def visualizar_clusterizacao(conector):
     """
-    Aplica K-Means (4 clusters) sobre atributos demográficos e temporais
-    dos clientes, visualiza via PCA e retorna o DataFrame enriquecido
-    com rótulos de cluster para uso posterior.
-
-    Retorna
-    -------
-    df_vendas : pd.DataFrame
-        DataFrame com colunas originais + 'cluster' e 'nome_cluster'.
+    Clusterização K-Means (4 clusters) sobre perfil demográfico e temporal
+    dos clientes, com visualização PCA. Retorna DataFrame com colunas
+    'cluster' e 'nome_cluster'.
     """
     from sklearn.preprocessing import OneHotEncoder
     from sklearn.cluster import KMeans
@@ -363,14 +358,8 @@ def visualizar_clusterizacao(conector):
 
 def visualizar_comportamento_clusters(df_vendas):
     """
-    Gráfico de linhas mostrando o volume de compras por dia da semana
-    para cada perfil de cluster.
-
-    Parâmetros
-    ----------
-    df_vendas : pd.DataFrame
-        DataFrame retornado por visualizar_clusterizacao (deve conter
-        as colunas 'dia_semana' e 'nome_cluster').
+    Volume de compras por dia da semana para cada perfil de cluster.
+    Recebe o DataFrame retornado por visualizar_clusterizacao.
     """
     tabela = pd.crosstab(df_vendas["dia_semana"], df_vendas["nome_cluster"])
 
