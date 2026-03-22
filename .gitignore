@@ -14,3 +14,6 @@ wheels/
 
 # Generated output
 output
+
+# VS Code
+.vscode
