@@ -1,0 +1,276 @@
+📊 Tabelas encontradas:
+
+- calendar
+- customers
+- products
+- sales
+- stores
+
+🔎 Prévia dos dados:
+
+===== calendar =====
+         date  year  month  day  week  day_of_week
+0  2023-01-01  2023      1    1    52            6
+1  2023-01-02  2023      1    2     1            0
+2  2023-01-03  2023      1    3     1            1
+3  2023-01-04  2023      1    4     1            2
+4  2023-01-05  2023      1    5     1            3
+5  2023-01-06  2023      1    6     1            4
+6  2023-01-07  2023      1    7     1            5
+7  2023-01-08  2023      1    8     1            6
+8  2023-01-09  2023      1    9     2            0
+9  2023-01-10  2023      1   10     2            1
+10 2023-01-11  2023      1   11     2            2
+11 2023-01-12  2023      1   12     2            3
+12 2023-01-13  2023      1   13     2            4
+13 2023-01-14  2023      1   14     2            5
+14 2023-01-15  2023      1   15     2            6
+15 2023-01-16  2023      1   16     3            0
+16 2023-01-17  2023      1   17     3            1
+17 2023-01-18  2023      1   18     3            2
+18 2023-01-19  2023      1   19     3            3
+19 2023-01-20  2023      1   20     3            4
+20 2023-01-21  2023      1   21     3            5
+21 2023-01-22  2023      1   22     3            6
+22 2023-01-23  2023      1   23     4            0
+23 2023-01-24  2023      1   24     4            1
+24 2023-01-25  2023      1   25     4            2
+25 2023-01-26  2023      1   26     4            3
+26 2023-01-27  2023      1   27     4            4
+27 2023-01-28  2023      1   28     4            5
+28 2023-01-29  2023      1   29     4            6
+29 2023-01-30  2023      1   30     5            0
+30 2023-01-31  2023      1   31     5            1
+31 2023-02-01  2023      2    1     5            2
+32 2023-02-02  2023      2    2     5            3
+33 2023-02-03  2023      2    3     5            4
+34 2023-02-04  2023      2    4     5            5
+35 2023-02-05  2023      2    5     5            6
+36 2023-02-06  2023      2    6     6            0
+37 2023-02-07  2023      2    7     6            1
+38 2023-02-08  2023      2    8     6            2
+39 2023-02-09  2023      2    9     6            3
+40 2023-02-10  2023      2   10     6            4
+41 2023-02-11  2023      2   11     6            5
+42 2023-02-12  2023      2   12     6            6
+43 2023-02-13  2023      2   13     7            0
+44 2023-02-14  2023      2   14     7            1
+45 2023-02-15  2023      2   15     7            2
+46 2023-02-16  2023      2   16     7            3
+47 2023-02-17  2023      2   17     7            4
+48 2023-02-18  2023      2   18     7            5
+49 2023-02-19  2023      2   19     7            6
+
+===== customers =====
+   customer_id  age  gender  loyalty_member  join_date
+0      C000001   40    Male               1 2025-05-21
+1      C000002   47    Male               0 2021-12-26
+2      C000003   58  Female               1 2022-09-13
+3      C000004   25  Female               0 2025-02-27
+4      C000005   43    Male               0 2023-08-31
+5      C000006   32    Male               0 2022-05-22
+6      C000007   51    Male               1 2024-07-28
+7      C000008   56  Female               0 2024-08-12
+8      C000009   18    Male               0 2025-06-23
+9      C000010   40    Male               0 2023-06-07
+10     C000011   44    Male               0 2025-12-22
+11     C000012   53    Male               1 2024-01-24
+12     C000013   68    Male               1 2022-03-23
+13     C000014   32  Female               1 2024-08-16
+14     C000015   61  Female               1 2026-02-18
+15     C000016   30  Female               0 2025-09-19
+16     C000017   29    Male               0 2021-05-03
+17     C000018   67    Male               1 2023-09-28
+18     C000019   69    Male               1 2022-09-28
+19     C000020   32  Female               1 2022-05-11
+20     C000021   29  Female               1 2021-09-22
+21     C000022   66    Male               0 2025-06-28
+22     C000023   49  Female               0 2025-09-23
+23     C000024   32    Male               1 2022-01-10
+24     C000025   33    Male               0 2025-08-11
+25     C000026   31  Female               0 2024-09-26
+26     C000027   29    Male               0 2024-08-29
+27     C000028   68  Female               0 2025-02-07
+28     C000029   54  Female               0 2023-05-23
+29     C000030   54  Female               0 2025-06-11
+30     C000031   65  Female               0 2024-05-17
+31     C000032   28    Male               1 2025-10-21
+32     C000033   47  Female               1 2022-04-19
+33     C000034   23  Female               1 2024-06-13
+34     C000035   67    Male               0 2021-09-02
+35     C000036   58    Male               1 2022-05-02
+36     C000037   56  Female               1 2024-02-13
+37     C000038   28  Female               1 2023-05-11
+38     C000039   27  Female               1 2023-07-25
+39     C000040   23  Female               1 2024-10-16
+40     C000041   66    Male               0 2022-12-04
+41     C000042   27  Female               0 2025-05-12
+42     C000043   39  Female               1 2024-08-07
+43     C000044   41    Male               1 2023-12-05
+44     C000045   30  Female               0 2024-01-04
+45     C000046   69    Male               0 2021-05-06
+46     C000047   31    Male               1 2025-07-12
+47     C000048   23    Male               0 2023-01-22
+48     C000049   49  Female               1 2025-09-04
+49     C000050   28    Male               0 2025-02-08
+
+===== products =====
+   product_id           product_name    brand category  cocoa_percent  weight_g
+0       P0001    White Chocolate 80%     Mars  Truffle             80       120
+1       P0002     Dark Chocolate 70%  Cadbury  Praline             70       100
+2       P0003  Truffle Chocolate 70%  Hershey  Praline             70       120
+3       P0004     Milk Chocolate 50%     Mars  Praline             50        80
+4       P0005    White Chocolate 70%  Ferrero    White             70        50
+5       P0006     Milk Chocolate 50%  Hershey     Dark             50        50
+6       P0007  Praline Chocolate 70%  Cadbury  Praline             70       120
+7       P0008    White Chocolate 90%   Godiva     Dark             90       100
+8       P0009    White Chocolate 50%  Ferrero     Dark             50        80
+9       P0010     Milk Chocolate 70%  Hershey  Truffle             70        50
+10      P0011  Praline Chocolate 90%  Ferrero  Truffle             90        80
+11      P0012  Truffle Chocolate 80%     Mars  Praline             80       200
+12      P0013    White Chocolate 70%   Godiva  Truffle             70       120
+13      P0014    White Chocolate 60%     Mars  Praline             60       100
+14      P0015     Dark Chocolate 50%  Ferrero  Praline             50        50
+15      P0016     Dark Chocolate 90%     Mars    White             90        50
+16      P0017    White Chocolate 50%  Hershey     Milk             50       120
+17      P0018     Dark Chocolate 70%  Ferrero     Dark             70        50
+18      P0019     Dark Chocolate 70%     Mars    White             70        50
+19      P0020  Truffle Chocolate 70%   Godiva     Dark             70       200
+20      P0021     Dark Chocolate 50%  Cadbury    White             50        50
+21      P0022  Praline Chocolate 50%  Hershey     Dark             50       200
+22      P0023     Dark Chocolate 70%  Cadbury  Praline             70       100
+23      P0024     Milk Chocolate 70%  Cadbury    White             70       100
+24      P0025  Praline Chocolate 90%    Lindt  Truffle             90       120
+25      P0026     Dark Chocolate 90%   Godiva  Praline             90       120
+26      P0027    White Chocolate 60%     Mars    White             60       200
+27      P0028     Dark Chocolate 50%    Lindt     Dark             50       200
+28      P0029     Milk Chocolate 60%    Lindt     Milk             60       100
+29      P0030  Praline Chocolate 90%    Lindt  Praline             90       120
+30      P0031    White Chocolate 80%   Godiva  Praline             80        80
+31      P0032  Praline Chocolate 70%  Ferrero     Dark             70       200
+32      P0033    White Chocolate 90%  Hershey  Praline             90       120
+33      P0034    White Chocolate 60%   Godiva  Praline             60       100
+34      P0035    White Chocolate 70%  Hershey     Dark             70       200
+35      P0036     Dark Chocolate 50%    Lindt  Praline             50        50
+36      P0037  Truffle Chocolate 60%  Hershey    White             60       120
+37      P0038    White Chocolate 50%  Cadbury     Milk             50       100
+38      P0039  Truffle Chocolate 90%  Ferrero    White             90        50
+39      P0040     Dark Chocolate 60%     Mars  Praline             60        80
+40      P0041     Milk Chocolate 70%  Cadbury  Praline             70        80
+41      P0042  Praline Chocolate 50%  Ferrero  Truffle             50       120
+42      P0043  Truffle Chocolate 90%    Lindt  Praline             90       200
+43      P0044    White Chocolate 50%  Ferrero  Praline             50       100
+44      P0045     Milk Chocolate 80%   Godiva  Truffle             80        50
+45      P0046     Dark Chocolate 50%  Cadbury    White             50       120
+46      P0047  Truffle Chocolate 70%     Mars     Dark             70       200
+47      P0048  Praline Chocolate 90%  Cadbury     Milk             90        50
+48      P0049     Milk Chocolate 60%  Ferrero  Truffle             60        50
+49      P0050  Praline Chocolate 60%  Ferrero  Truffle             60        50
+
+===== sales =====
+       order_id order_date product_id store_id customer_id  ...  unit_price  discount  revenue   cost  profit
+0   0RD00000001 2023-01-07      P0080     S093     C040749  ...       14.43      0.15    61.33  42.77   18.56
+1   0RD00000002 2023-10-22      P0173     S065     C020161  ...       12.01      0.00    36.03  19.06   16.97
+2   0RD00000003 2023-05-07      P0115     S078     C048069  ...       10.02      0.00    20.04  10.29    9.75
+3   0RD00000004 2024-06-23      P0186     S088     C047901  ...       14.66      0.10    26.39  16.35   10.04
+4   0RD00000005 2024-09-24      P0197     S054     C033950  ...       12.34      0.00    12.34   7.94    4.40
+5   0RD00000006 2024-03-29      P0160     S089     C008918  ...       13.52      0.00    54.08  36.59   17.49
+6   0RD00000007 2023-02-26      P0062     S024     C002897  ...       11.97      0.10    10.77   7.16    3.61
+7   0RD00000008 2023-11-03      P0111     S085     C038072  ...        4.62      0.00    23.10  16.15    6.95
+8   0RD00000009 2024-10-11      P0135     S029     C003786  ...        7.88      0.00    31.52  19.90   11.62
+9   0RD00000010 2023-12-17      P0069     S056     C043148  ...        8.88      0.00    26.64  18.19    8.45
+10  0RD00000011 2023-01-01      P0181     S070     C016710  ...       12.62      0.00    63.10  43.74   19.36
+11  0RD00000012 2023-03-18      P0137     S028     C040620  ...        4.10      0.00    16.40   9.90    6.50
+12  0RD00000013 2024-11-06      P0003     S021     C048449  ...       10.90      0.00    32.70  17.29   15.41
+13  0RD00000014 2024-11-08      P0026     S005     C009995  ...        4.43      0.10     7.97   5.50    2.48
+14  0RD00000015 2024-01-08      P0042     S100     C011763  ...        5.48      0.00    10.96   6.83    4.13
+15  0RD00000016 2023-04-03      P0110     S037     C037715  ...        5.93      0.00    11.86   6.11    5.75
+16  0RD00000017 2024-08-16      P0058     S062     C038708  ...        5.51      0.00    16.53  10.70    5.83
+17  0RD00000018 2024-06-01      P0088     S069     C013225  ...        8.54      0.00    42.70  26.15   16.55
+18  0RD00000019 2024-03-26      P0069     S063     C001239  ...        9.05      0.00    27.15  15.61   11.54
+19  0RD00000020 2023-09-10      P0037     S049     C049903  ...        4.52      0.10     4.07   2.22    1.84
+20  0RD00000021 2023-01-28      P0047     S088     C011617  ...        4.56      0.00    22.80  11.43   11.37
+21  0RD00000022 2024-03-10      P0048     S029     C020288  ...        7.35      0.15     6.25   4.08    2.17
+22  0RD00000023 2023-12-06      P0145     S040     C017698  ...        7.54      0.15    25.64  16.01    9.63
+23  0RD00000024 2024-10-20      P0069     S097     C011533  ...       10.61      0.10     9.55   5.90    3.65
+24  0RD00000025 2024-09-15      P0177     S084     C005976  ...        5.27      0.00    10.54   5.97    4.57
+25  0RD00000026 2024-06-09      P0136     S052     C031721  ...        7.18      0.10    32.31  19.05   13.26
+26  0RD00000027 2023-11-29      P0023     S061     C027411  ...        5.17      0.20     4.14   2.76    1.38
+27  0RD00000028 2024-04-30      P0049     S095     C018065  ...       11.89      0.00    11.89   8.20    3.69
+28  0RD00000029 2024-04-17      P0171     S001     C039927  ...        8.53      0.15    29.00  18.50   10.50
+29  0RD00000030 2023-02-14      P0055     S099     C006289  ...        6.25      0.00    25.00  14.40   10.60
+30  0RD00000031 2024-01-27      P0175     S034     C005943  ...       10.83      0.00    10.83   6.49    4.34
+31  0RD00000032 2024-04-05      P0057     S043     C003841  ...       13.58      0.00    67.90  44.91   22.99
+32  0RD00000033 2023-10-13      P0171     S052     C026554  ...       12.89      0.00    51.56  31.46   20.10
+33  0RD00000034 2024-05-16      P0106     S039     C007497  ...       14.38      0.20    23.01  15.84    7.17
+34  0RD00000035 2023-07-24      P0144     S003     C008396  ...       14.88      0.20    47.62  24.33   23.29
+35  0RD00000036 2024-04-10      P0176     S033     C005440  ...       10.28      0.20    16.45  10.04    6.40
+36  0RD00000037 2024-02-15      P0073     S096     C007972  ...       13.20      0.20    10.56   5.77    4.79
+37  0RD00000038 2023-07-03      P0157     S051     C024031  ...       13.03      0.10    35.18  22.84   12.34
+38  0RD00000039 2024-01-09      P0049     S068     C010667  ...        4.60      0.00     4.60   2.49    2.11
+39  0RD00000040 2024-10-10      P0161     S039     C000153  ...       13.38      0.15    34.12  18.90   15.22
+40  0RD00000041 2023-03-09      P0074     S007     C015022  ...        4.63      0.00     9.26   4.89    4.37
+41  0RD00000042 2023-12-15      P0149     S040     C025509  ...       13.53      0.00    54.12  27.31   26.81
+42  0RD00000043 2023-05-06      P0094     S017     C043764  ...        6.34      0.00    31.70  18.39   13.31
+43  0RD00000044 2024-12-14      P0064     S053     C019894  ...        8.29      0.00    16.58   9.59    6.99
+44  0RD00000045 2023-04-30      P0003     S051     C020108  ...        8.88      0.15    30.19  16.48   13.71
+45  0RD00000046 2023-08-23      P0001     S091     C033225  ...        6.00      0.00    30.00  16.71   13.29
+46  0RD00000047 2024-10-29      P0146     S068     C007002  ...        9.57      0.00    47.85  32.29   15.56
+47  0RD00000048 2023-05-28      P0015     S061     C010303  ...       13.55      0.00    40.65  22.69   17.96
+48  0RD00000049 2023-11-02      P0088     S096     C003027  ...        7.49      0.00     7.49   4.86    2.63
+49  0RD00000050 2023-02-10      P0065     S095     C007938  ...       14.04      0.15    35.80  20.10   15.70
+
+[50 rows x 11 columns]
+
+===== stores =====
+   store_id          store_name       city    country store_type
+0      S001   Chocolate Store 1   New York     Canada     Retail
+1      S002   Chocolate Store 2  Melbourne     Canada       Mall
+2      S003   Chocolate Store 3     Berlin     France       Mall
+3      S004   Chocolate Store 4      Paris         UK    Airport
+4      S005   Chocolate Store 5     Sydney        USA     Online
+5      S006   Chocolate Store 6    Toronto     Canada     Online
+6      S007   Chocolate Store 7     Sydney     France       Mall
+7      S008   Chocolate Store 8      Paris         UK       Mall
+8      S009   Chocolate Store 9      Paris     France     Online
+9      S010  Chocolate Store 10    Toronto         UK     Retail
+10     S011  Chocolate Store 11   New York        USA     Retail
+11     S012  Chocolate Store 12     London     France       Mall
+12     S013  Chocolate Store 13  Melbourne     France     Retail
+13     S014  Chocolate Store 14     London  Australia    Airport
+14     S015  Chocolate Store 15      Paris     Canada    Airport
+15     S016  Chocolate Store 16   New York        USA       Mall
+16     S017  Chocolate Store 17  Melbourne         UK    Airport
+17     S018  Chocolate Store 18     London    Germany     Retail
+18     S019  Chocolate Store 19   New York    Germany    Airport
+19     S020  Chocolate Store 20    Toronto    Germany     Retail
+20     S021  Chocolate Store 21  Melbourne        USA       Mall
+21     S022  Chocolate Store 22     Berlin        USA     Retail
+22     S023  Chocolate Store 23     London     Canada     Retail
+23     S024  Chocolate Store 24      Paris     France     Online
+24     S025  Chocolate Store 25     Sydney        USA    Airport
+25     S026  Chocolate Store 26     London        USA     Online
+26     S027  Chocolate Store 27     Sydney    Germany    Airport
+27     S028  Chocolate Store 28     London  Australia       Mall
+28     S029  Chocolate Store 29  Melbourne  Australia     Online
+29     S030  Chocolate Store 30   New York         UK    Airport
+30     S031  Chocolate Store 31      Paris  Australia     Retail
+31     S032  Chocolate Store 32      Paris         UK       Mall
+32     S033  Chocolate Store 33    Toronto  Australia     Retail
+33     S034  Chocolate Store 34      Paris     Canada       Mall
+34     S035  Chocolate Store 35  Melbourne        USA       Mall
+35     S036  Chocolate Store 36     Berlin  Australia       Mall
+36     S037  Chocolate Store 37     London     Canada     Online
+37     S038  Chocolate Store 38  Melbourne        USA       Mall
+38     S039  Chocolate Store 39   New York         UK       Mall
+39     S040  Chocolate Store 40  Melbourne     Canada    Airport
+40     S041  Chocolate Store 41     London    Germany    Airport
+41     S042  Chocolate Store 42      Paris        USA     Online
+42     S043  Chocolate Store 43     London    Germany    Airport
+43     S044  Chocolate Store 44      Paris         UK    Airport
+44     S045  Chocolate Store 45     Sydney     Canada     Online
+45     S046  Chocolate Store 46     London     Canada       Mall
+46     S047  Chocolate Store 47   New York         UK       Mall
+47     S048  Chocolate Store 48    Toronto     Canada    Airport
+48     S049  Chocolate Store 49     Berlin     France       Mall
+49     S050  Chocolate Store 50   New York     Canada    Airport
