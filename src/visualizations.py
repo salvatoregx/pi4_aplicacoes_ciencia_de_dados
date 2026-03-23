@@ -148,45 +148,51 @@ def visualizar_vendas_por_estacao(conector):
     """
     Gráfico de linhas mostrando a flutuação de vendas dos 10 produtos
     mais vendidos ao longo das estações do ano.
+    Lógica baseada nas tabelas intermediárias de visualizacaoV.py.
     """
     consulta = """
         SELECT
-            p.product_name AS produto,
+            s.order_id,
+            (p.product_id || ' - ' || p.product_name || ' - '
+             || p.brand || ' - ' || p.category) AS produto,
             CASE
                 WHEN c.month IN (12, 1, 2) THEN 'Verão'
                 WHEN c.month IN (3, 4, 5)  THEN 'Outono'
                 WHEN c.month IN (6, 7, 8)  THEN 'Inverno'
                 ELSE 'Primavera'
-            END AS estacao,
-            SUM(s.quantity) AS total_vendido
+            END AS estacao
         FROM sales s
         JOIN products p  ON s.product_id = p.product_id
         JOIN calendar c  ON s.order_date = c.date
-        GROUP BY produto, estacao
     """
     df = conector.executar_consulta_personalizada(consulta)
 
-    # Seleciona os 10 produtos com maior volume total
-    top_produtos = df.groupby("produto")["total_vendido"].sum().nlargest(10).index
-    df_top = df[df["produto"].isin(top_produtos)]
-
-    # Pivoteia por estação
-    tabela_pivot = df_top.pivot_table(
-        index="estacao",
-        columns="produto",
-        values="total_vendido",
-        aggfunc="sum",
-    )
     ordem_estacoes = ["Verão", "Outono", "Inverno", "Primavera"]
-    tabela_pivot = tabela_pivot.reindex(ordem_estacoes)
+
+    # Top 10 produtos por contagem de pedidos
+    top10 = df.groupby("produto").size().sort_values(ascending=False).head(10)
+    top10_produtos = top10.index
+
+    df_top10 = df[df["produto"].isin(top10_produtos)]
+
+    # Contagem por produto e estação
+    df_analise = (
+        df_top10.groupby(["produto", "estacao"]).size().reset_index(name="quantidade")
+    )
+
+    df_analise["estacao"] = pd.Categorical(
+        df_analise["estacao"], categories=ordem_estacoes, ordered=True
+    )
+    df_analise = df_analise.sort_values(["produto", "estacao"])
 
     plt.figure(figsize=(16, 8))
-    for produto in tabela_pivot.columns:
-        plt.plot(tabela_pivot.index, tabela_pivot[produto], marker="o", label=produto)
+    for produto in df_analise["produto"].unique():
+        dados = df_analise[df_analise["produto"] == produto]
+        plt.plot(dados["estacao"], dados["quantidade"], marker="o", label=produto)
 
-    plt.title("Flutuação de Vendas por Produto ao Longo das Estações")
+    plt.title("Top 10 Produtos - Vendas por Estação do Ano")
     plt.xlabel("Estação do Ano")
-    plt.ylabel("Total Vendido")
+    plt.ylabel("Quantidade de Vendas")
     plt.legend(title="Produtos", bbox_to_anchor=(1.05, 1), loc="upper left")
     plt.tight_layout()
     _salvar_figura("vendas_por_estacao.png")
@@ -195,81 +201,89 @@ def visualizar_vendas_por_estacao(conector):
 
 def visualizar_consumo_por_dia_semana(conector):
     """
-    Gráfico de linhas mostrando o consumo médio de chocolate por dia
-    da semana, segmentado por gênero e faixa etária.
+    Gráfico de linhas mostrando o consumo de produtos por dia da semana,
+    segmentado por gênero e faixa etária (totais, não médias).
+    Lógica baseada nas tabelas intermediárias de visualizacaoV.py.
     """
     consulta = """
         SELECT
-            c.day_of_week,
-            cu.gender         AS genero,
+            s.order_id,
+            CASE cu.gender
+                WHEN 'Male'   THEN 'Masculino'
+                WHEN 'Female' THEN 'Feminino'
+            END AS genero,
             CASE
-                WHEN cu.age < 25 THEN '18-24'
-                WHEN cu.age < 35 THEN '25-34'
-                WHEN cu.age < 50 THEN '35-49'
+                WHEN cu.age IS NULL THEN 'Não identificado'
+                WHEN cu.age <= 24   THEN '18-24'
+                WHEN cu.age <= 34   THEN '25-34'
+                WHEN cu.age <= 49   THEN '35-49'
                 ELSE '50+'
             END AS faixa_idade,
-            AVG(s.quantity) AS media_consumo
+            CASE c.day_of_week
+                WHEN 0 THEN 'Segunda-feira'
+                WHEN 1 THEN 'Terça-feira'
+                WHEN 2 THEN 'Quarta-feira'
+                WHEN 3 THEN 'Quinta-feira'
+                WHEN 4 THEN 'Sexta-feira'
+                WHEN 5 THEN 'Sábado'
+                ELSE 'Domingo'
+            END AS dia_semana
         FROM sales s
         JOIN calendar  c  ON s.order_date  = c.date
         JOIN customers cu ON s.customer_id = cu.customer_id
-        GROUP BY c.day_of_week, genero, faixa_idade
     """
     df = conector.executar_consulta_personalizada(consulta)
 
-    mapa_dias = {
-        0: "Segunda",
-        1: "Terça",
-        2: "Quarta",
-        3: "Quinta",
-        4: "Sexta",
-        5: "Sábado",
-        6: "Domingo",
-    }
-    df["dia_semana"] = df["day_of_week"].map(mapa_dias)
-    ordem_dias = list(mapa_dias.values())
+    ordem_dias = [
+        "Segunda-feira",
+        "Terça-feira",
+        "Quarta-feira",
+        "Quinta-feira",
+        "Sexta-feira",
+        "Sábado",
+        "Domingo",
+    ]
 
-    # Média total por dia
-    media_total = df.groupby("dia_semana")["media_consumo"].mean().reindex(ordem_dias)
+    # Total por dia
+    total_dia = df.groupby("dia_semana").size().reindex(ordem_dias)
 
     # Por gênero
-    pivot_genero = df.pivot_table(
-        index="dia_semana", columns="genero", values="media_consumo", aggfunc="mean"
-    ).reindex(ordem_dias)
+    genero_dia = (
+        df.groupby(["dia_semana", "genero"]).size().unstack().reindex(ordem_dias)
+    )
 
     # Por faixa etária
-    pivot_idade = df.pivot_table(
-        index="dia_semana",
-        columns="faixa_idade",
-        values="media_consumo",
-        aggfunc="mean",
-    ).reindex(ordem_dias)
+    idade_dia = (
+        df.groupby(["dia_semana", "faixa_idade"]).size().unstack().reindex(ordem_dias)
+    )
 
     plt.figure(figsize=(14, 8))
-    plt.plot(media_total.index, media_total.values, marker="o", label="Média Total")
 
-    for col in pivot_genero.columns:
+    plt.plot(total_dia.index, total_dia.values, marker="o", label="Total")
+
+    for col in genero_dia.columns:
         plt.plot(
-            pivot_genero.index,
-            pivot_genero[col],
+            genero_dia.index,
+            genero_dia[col],
             marker="o",
             linestyle="--",
-            label=f"Gênero: {col}",
+            label=col,
         )
 
-    for col in pivot_idade.columns:
+    for col in idade_dia.columns:
         plt.plot(
-            pivot_idade.index,
-            pivot_idade[col],
+            idade_dia.index,
+            idade_dia[col],
             marker="o",
             linestyle=":",
-            label=f"Idade: {col}",
+            label=col,
         )
 
-    plt.title("Consumo Médio de Chocolate por Dia da Semana")
+    plt.title("Consumo de Produtos por Dia da Semana")
     plt.xlabel("Dia da Semana")
-    plt.ylabel("Média de Consumo")
-    plt.legend(bbox_to_anchor=(1.05, 1), loc="upper left")
+    plt.ylabel("Quantidade de Produtos")
     plt.xticks(rotation=45)
+    plt.legend(bbox_to_anchor=(1.05, 1), loc="upper left")
     plt.tight_layout()
     _salvar_figura("consumo_por_dia_semana.png")
     plt.show()
@@ -289,11 +303,15 @@ def visualizar_clusterizacao(conector):
     consulta = """
         SELECT
             s.order_id,
-            cu.gender          AS genero,
+            CASE cu.gender
+                WHEN 'Male'   THEN 'Masculino'
+                WHEN 'Female' THEN 'Feminino'
+            END AS genero,
             CASE
-                WHEN cu.age < 25 THEN '18-24'
-                WHEN cu.age < 35 THEN '25-34'
-                WHEN cu.age < 50 THEN '35-49'
+                WHEN cu.age IS NULL THEN 'Não identificado'
+                WHEN cu.age <= 24   THEN '18-24'
+                WHEN cu.age <= 34   THEN '25-34'
+                WHEN cu.age <= 49   THEN '35-49'
                 ELSE '50+'
             END AS faixa_idade,
             CASE
