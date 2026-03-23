@@ -29,6 +29,8 @@ Construir uma prova de conceito de modelo de inteligência de negócios que real
 | Quando e quem compra mais? | Consumo por dia da semana | Linhas (gênero, faixa etária) |
 | Existem perfis de consumidor distintos? | Clusterização K-Means | Dispersão (PCA) |
 | Quando cada perfil é mais ativo? | Comportamento dos clusters | Linhas (volume por dia) |
+| Receita e volume seguem tendência? | Tendência diária (média móvel 14d) | Linhas (eixo duplo) |
+| Lucro acompanha crescimento de receita? | Correlação receita × lucro | Dispersão (tendência linear) |
 
 ## Stack
 

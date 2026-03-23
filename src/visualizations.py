@@ -1,78 +1,3 @@
-import duckdb
-import pandas as pd
-import matplotlib.pyplot as plt
-
-# Classe de conexão
-class ConectorBD:
-    def __init__(self, caminho_banco):
-        self.con = duckdb.connect(caminho_banco)
-
-    def obter_tabela_bruta(self, nome_tabela):
-        query = f"SELECT * FROM {nome_tabela}"
-        return self.con.execute(query).df()
-
-
-# Função de análise
-def analisar_relacao_receita_lucro(conector):
-
-    # 1. Buscar dados
-    df = conector.obter_tabela_bruta('sales')
-
-    # 2. Limpeza
-    df = df[['revenue', 'profit']].dropna()
-
-    # 3. Correlação
-    correlacao = df['revenue'].corr(df['profit'])
-    print(f"Correlação entre Receita e Lucro: {correlacao:.4f}")
-
-    # 4. Gráfico
-    plt.figure(figsize=(8, 5))
-
-    plt.scatter(
-        df['revenue'],
-        df['profit'],
-        alpha=0.6
-    )
-
-    # UNIDADE ADICIONADA
-    plt.title("Relação entre Receita e Lucro")
-    plt.xlabel("Receita (R$)")
-    plt.ylabel("Lucro (R$)")
-
-    # Linha de tendência
-    z = df['revenue']
-    p = df['profit']
-
-    m = z.cov(p) / z.var()
-    b = p.mean() - (m * z.mean())
-
-    plt.plot(z, m*z + b)
-
-    plt.grid(True)
-    plt.show()
-
-    # 5. Resultado
-    return pd.Series({
-        'Correlação Receita x Lucro': f"{correlacao:.4f}",
-        'Tipo de Relação': (
-            'Forte positiva' if correlacao > 0.7 else
-            'Moderada' if correlacao > 0.4 else
-            'Fraca'
-        )
-    }, name="Análise Receita vs Lucro")
-
-
-# EXECUÇÃO
-if __name__ == "__main__":
-
-    # cria conexão
-    conector = ConectorBD("../data/chocolate_sales.db")
-
-    # roda análise
-    resultado = analisar_relacao_receita_lucro(conector)
-
-    # imprime resultado
-    print(resultado)
 import os
 import pandas as pd
 import numpy as np
@@ -228,10 +153,10 @@ def visualizar_vendas_por_estacao(conector):
         SELECT
             p.product_name AS produto,
             CASE
-                WHEN c.month IN (12, 1, 2) THEN 'Inverno'
-                WHEN c.month IN (3, 4, 5)  THEN 'Primavera'
-                WHEN c.month IN (6, 7, 8)  THEN 'Verão'
-                ELSE 'Outono'
+                WHEN c.month IN (12, 1, 2) THEN 'Verão'
+                WHEN c.month IN (3, 4, 5)  THEN 'Outono'
+                WHEN c.month IN (6, 7, 8)  THEN 'Inverno'
+                ELSE 'Primavera'
             END AS estacao,
             SUM(s.quantity) AS total_vendido
         FROM sales s
@@ -252,7 +177,7 @@ def visualizar_vendas_por_estacao(conector):
         values="total_vendido",
         aggfunc="sum",
     )
-    ordem_estacoes = ["Inverno", "Primavera", "Verão", "Outono"]
+    ordem_estacoes = ["Verão", "Outono", "Inverno", "Primavera"]
     tabela_pivot = tabela_pivot.reindex(ordem_estacoes)
 
     plt.figure(figsize=(16, 8))
@@ -518,3 +443,48 @@ def visualizar_tendencia_diaria(conector):
     plt.tight_layout()
     _salvar_figura("tendencia_diaria.png")
     plt.show()
+
+
+def visualizar_relacao_receita_lucro(conector):
+    """
+    Scatter plot de receita vs lucro com linha de tendência e correlação.
+    Permite avaliar se o crescimento de receita é acompanhado por aumento
+    proporcional no lucro, indicando eficiência operacional.
+    """
+    df = conector.obter_tabela_bruta("sales")
+    df = df[["revenue", "profit"]].dropna()
+
+    correlacao = df["revenue"].corr(df["profit"])
+
+    plt.figure(figsize=(8, 5))
+    plt.scatter(df["revenue"], df["profit"], alpha=0.6)
+
+    plt.title("Relação entre Receita e Lucro")
+    plt.xlabel("Receita (R$)")
+    plt.ylabel("Lucro (R$)")
+
+    # Linha de tendência (regressão linear simples)
+    receita = df["revenue"]
+    lucro = df["profit"]
+    m = receita.cov(lucro) / receita.var()
+    b = lucro.mean() - (m * receita.mean())
+    plt.plot(receita, m * receita + b, color="red", label="Tendência")
+
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    plt.tight_layout()
+    _salvar_figura("relacao_receita_lucro.png")
+    plt.show()
+
+    print(f"Correlação entre Receita e Lucro: {correlacao:.4f}")
+    return pd.Series(
+        {
+            "Correlação Receita x Lucro": f"{correlacao:.4f}",
+            "Tipo de Relação": (
+                "Forte positiva"
+                if correlacao > 0.7
+                else "Moderada" if correlacao > 0.4 else "Fraca"
+            ),
+        },
+        name="Análise Receita vs Lucro",
+    )
