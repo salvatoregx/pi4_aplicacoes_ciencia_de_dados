@@ -403,7 +403,7 @@ def visualizar_comportamento_clusters(df_vendas):
 
 
 def visualizar_tendencia_diaria(conector):
-    """Gráfico de tendência diária de receita e volume. """
+    """Gráfico de tendência diária de receita e volume."""
     consulta = """
         SELECT
             c.date AS data,
@@ -418,21 +418,51 @@ def visualizar_tendencia_diaria(conector):
     df["data"] = pd.to_datetime(df["data"])
     df = df.set_index("data").asfreq("D").fillna(0)
 
-    df["media_movel_receita"] = df["receita_total"].rolling(window=14, min_periods=1).mean()
-    df["media_movel_itens"] = df["itens_vendidos"].rolling(window=14, min_periods=1).mean()
+    df["media_movel_receita"] = (
+        df["receita_total"].rolling(window=14, min_periods=1).mean()
+    )
+    df["media_movel_itens"] = (
+        df["itens_vendidos"].rolling(window=14, min_periods=1).mean()
+    )
 
     fig, ax1 = plt.subplots(figsize=(14, 6))
-    ax1.plot(df.index, df["receita_total"], color="#3498db", alpha=0.4, label="Receita diária")
-    ax1.plot(df.index, df["media_movel_receita"], color="#1f77b4", linewidth=2, label="Média móvel 14 dias (receita)")
+    ax1.plot(
+        df.index,
+        df["receita_total"],
+        color="#3498db",
+        alpha=0.4,
+        label="Receita diária",
+    )
+    ax1.plot(
+        df.index,
+        df["media_movel_receita"],
+        color="#1f77b4",
+        linewidth=2,
+        label="Média móvel 14 dias (receita)",
+    )
     ax1.set_ylabel("Receita (R$)", color="#1f77b4")
     ax1.ticklabel_format(style="plain", axis="y")
 
     ax2 = ax1.twinx()
-    ax2.plot(df.index, df["itens_vendidos"], color="#e67e22", alpha=0.4, label="Itens vendidos diários")
-    ax2.plot(df.index, df["media_movel_itens"], color="#d35400", linewidth=2, label="Média móvel 14 dias (itens)")
+    ax2.plot(
+        df.index,
+        df["itens_vendidos"],
+        color="#e67e22",
+        alpha=0.4,
+        label="Itens vendidos diários",
+    )
+    ax2.plot(
+        df.index,
+        df["media_movel_itens"],
+        color="#d35400",
+        linewidth=2,
+        label="Média móvel 14 dias (itens)",
+    )
     ax2.set_ylabel("Itens vendidos", color="#d35400")
 
-    fig.suptitle("Tendência Diária de Receita e Volume de Vendas", fontsize=16, fontweight="bold")
+    fig.suptitle(
+        "Tendência Diária de Receita e Volume de Vendas", fontsize=16, fontweight="bold"
+    )
     ax1.set_xlabel("Data")
 
     lines_1, labels_1 = ax1.get_legend_handles_labels()
@@ -483,7 +513,9 @@ def visualizar_relacao_receita_lucro(conector):
             "Tipo de Relação": (
                 "Forte positiva"
                 if correlacao > 0.7
-                else "Moderada" if correlacao > 0.4 else "Fraca"
+                else "Moderada"
+                if correlacao > 0.4
+                else "Fraca"
             ),
         },
         name="Análise Receita vs Lucro",
