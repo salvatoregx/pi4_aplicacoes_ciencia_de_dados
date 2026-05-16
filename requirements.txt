@@ -1,0 +1,8 @@
+# Dependências de execução do dashboard Streamlit.
+# O Streamlit Cloud instala a partir deste arquivo (não lê pyproject.toml/uv.lock).
+streamlit>=1.40
+duckdb>=1.5.0
+pandas>=3.0.1
+numpy>=2.4.3
+plotly>=5.24
+scikit-learn>=1.6.1

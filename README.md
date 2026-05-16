@@ -29,12 +29,15 @@ Construir uma prova de conceito de modelo de inteligência de negócios que real
 | Quando e quem compra mais? | Consumo por dia da semana | Linhas (gênero, faixa etária) |
 | Existem perfis de consumidor distintos? | Clusterização K-Means | Dispersão (PCA) |
 | Quando cada perfil é mais ativo? | Comportamento dos clusters | Linhas (volume por dia) |
+| Receita e volume seguem tendência? | Tendência diária (média móvel 14d) | Linhas (eixo duplo) |
+| Lucro acompanha crescimento de receita? | Correlação receita × lucro | Dispersão (tendência linear) |
 
 ## Stack
 
 - **Ambiente:** Jupyter Notebook
 - **Análise:** Pandas + NumPy
-- **Visualização:** Matplotlib
+- **Visualização:** Matplotlib (notebook) / Plotly (dashboard)
+- **Dashboard:** Streamlit
 - **Banco de dados:** DuckDB
 - **Controle de versão:** Git + GitHub
 
@@ -48,8 +51,14 @@ Construir uma prova de conceito de modelo de inteligência de negócios que real
 │   ├── helpers.py              # ConectorBD (abstração DuckDB)
 │   ├── analysis.py             # Funções de análise exploratória
 │   └── visualizations.py       # Funções de visualização (Matplotlib)
-├── entregas.ipynb              # Notebook principal (entrega)
+├── dashboard/
+│   ├── app.py                  # Página inicial (Visão Geral)
+│   ├── data.py                 # Acesso a dados e gráficos (com cache)
+│   ├── charts.py               # Visualizações interativas (Plotly)
+│   └── pages/                  # Páginas Clientes, Produtos, Lojas, Tendências
+├── entregas.ipynb              # Notebook principal (entrega da 1.ª etapa)
 ├── pyproject.toml              # Dependências do projeto
+├── requirements.txt            # Dependências de execução do dashboard
 └── uv.lock                     # Lock de versões
 ```
 
@@ -58,7 +67,10 @@ Construir uma prova de conceito de modelo de inteligência de negócios que real
 1. Instale o [uv](https://github.com/astral-sh/uv) (gerenciador de pacotes Python)
 2. Clone o repositório e entre na pasta do projeto
 3. Execute `uv sync` para criar o ambiente virtual e instalar as dependências
-4. Abra `entregas.ipynb` no Jupyter e execute todas as células
+
+**Notebook de análise (1.ª etapa):** abra `entregas.ipynb` no Jupyter e execute todas as células.
+
+**Dashboard Streamlit (2.ª etapa):** execute `uv run streamlit run dashboard/app.py`.
 
 ## Equipe
 
