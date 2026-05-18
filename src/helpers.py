@@ -17,7 +17,7 @@ class ConectorBD:
             self.caminho_bd = caminho_bd
 
     def _executar_consulta(self, consulta):
-        with duckdb.connect(self.caminho_bd) as conexao:
+        with duckdb.connect(self.caminho_bd, read_only=True) as conexao:
             df = conexao.execute(consulta).df()
         return df
 
